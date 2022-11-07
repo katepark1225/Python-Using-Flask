@@ -1,0 +1,243 @@
+<html>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <style>
+    @font-face { font-family: Medium; src: url('/static/esamanruMedium.ttf'); }
+    @font-face { font-family: Bold; src: url('/static/esamanruBold.ttf'); }
+
+body {
+  scroll-behavior: smooth;
+  margin: 0;
+  padding: 20px;
+  background-color: rgba(223, 223, 240, 0.6);
+  width: calc(100% - 40px);
+}
+a:hover,a:focus {
+  text-decoration:none;
+}
+ul {
+  list-style-type: none;
+  padding-left: 20px;
+  padding-top: 10px;
+}
+.menu {
+  font-size: 1.2em;
+  font-family: Bold;
+  padding-bottom: 7px;
+}
+.submenu {
+  color: grey;
+  font-size: 0.9em;
+  font-family: Light;
+}
+.coin .left2 {
+  width: 40%;
+  float: left;
+  margin-top: 20px;
+}
+.top_list table {
+  font-family: Light;
+  width: calc(100% - 40px);
+  margin-left: 20px;
+  font-size: 1em;
+}
+.top_list table .header1 {
+  width: 25px;
+}
+.top_list table .header3 {
+  text-align: right;
+  width: 50px;
+}
+.top_list .top .header3 {
+  color: #f95959;
+}
+.top_list .bottom .header3 {
+  color: #455d7a;
+}
+.top_list .line {
+  height: 0.5px;
+  width: 80%;
+  background-color: slategrey;
+  margin-left: 10%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  opacity: 0.5;
+}
+
+.coin {
+  width: 100%;
+  float: left;
+}
+.coin .right {
+  width: calc(60% - 40px);
+  float: left;
+  background-color: rgba(186, 187, 211, 0.2);
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+  border-radius: 1.5em;
+  margin-top: 20px;
+}
+.coin .left {
+  width: 40%;
+  float: left;
+  margin-top: 10%;
+}
+.coin .left table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-family: Light;
+  width: 70%;
+  margin-left: 15%;
+  text-align: center;
+}
+.coin .left table td {
+  padding: 0.5em;
+}
+.coin .left table .high {
+  border-bottom: 2px solid rgba(128, 128, 128, 0.3);
+}
+.coin .left table .low {
+  border-top: 2px solid rgba(128, 128, 128, 0.3);
+}
+.coin .left table .quantity {
+  color: grey;
+}
+.coin .left .buttons {
+  font-family: Medium;
+  margin-left: calc(50% - 5.7em);
+  margin-top: 3em;
+}
+.coin .left .buttons div {
+  float: left;
+  text-align: center;
+  width: 3em;
+  padding: 0.4em;
+}
+.coin .left .buttons .buy {
+  background-color: rgba(249, 89, 89, 1);
+  color: white;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-left: 0px;
+  cursor: pointer;
+}
+.coin .left .buttons .sell {
+  background-color: rgba(69, 93, 122, 1);
+  color: white;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-right: 0px;
+  cursor: pointer;
+}
+.coin .left .buttons .price {
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+.coin .tri_left {
+  float: right;
+}
+.coin .tri_left .interest {
+  font-family: Medium;
+  margin-top: 2em;
+  margin-left: calc(2em + 20px);
+}
+.coin .tri_left .rate {
+  font-family: Bold;
+  margin-left: 10px;
+  font-size: 1.5em;
+  float: left;
+  display: inline-block;
+  margin-top: 0.1em;
+}
+.coin .tri_left .description {
+  font-family: Light;
+  margin-left: 10px;
+  color: grey;
+  margin-top: 1em;
+  float: left;
+}
+.coin .tri_left .icon {
+  border-radius: 10px;
+  height: 2em;
+  aspect-ratio: 1/1;
+  float: left;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+}
+
+}
+    </style>
+    </head>
+    <body>
+      <div class="coin" style="padding-top: 2px;" id="Chart">
+                <div class="right">
+                  <ul style="margin-left: -10px; width: 50%; float: left;">
+                    <li class="menu">맞춤형지표</li>
+                    <li class="submenu">선택종목 표준 실적</li>
+                  </ul>
+                  <div class="tri_left">
+                    <div class="interest">전일대비</div>
+                    <div class="icon" style="background-color: #455d7a;">&#8681;</div>
+                    <div class="rate">30%</div>
+                  </div>
+                    <div id="loaded_chart">
+                  <canvas id="trend" style="width:100%; "></canvas>
+                  <script>
+                  var xValues = {{ mean_list }};
+                  var yValues = {{ time_list }};
+
+                  new Chart("trend", {
+                    type: "line",
+                    data: {
+                      labels: xValues,
+                      datasets: [{
+                        fill: false,
+                        lineTension: 0,
+                        backgroundColor: "rgb(153, 0, 204)",
+                        borderColor: "rgb(204, 153, 255)",
+                        data: yValues
+                      }]
+                    },
+                    options: {
+                    elements: { point: { radius: 0 }},
+                      legend: {display: false},
+                      scales: {
+                        yAxes: [{ticks: {min: 6, max:16}}],
+                      }
+                    }
+                  });
+                  </script>
+                    </div>
+                </div>
+
+        <div class="left2" id="List">
+                  <div class="top_list" id="fave_list">
+                    <table class="top">
+                        {% for fav in favorable_up %}
+                      <tr><a href="{{ url_for('item', id=fav[1]) }}">
+                        <td class="header1">{{ loop.index }}.</td>
+                        <td class="header2">
+                            {{ fav[0] }}
+                        </td>
+                        <td class="header3">{{ fav[2] }}%</td>
+                      </a></tr>
+                        {% endfor %}
+                    </table>
+                    <div class="line"></div>
+                    <table class="bottom">
+                        {% for fav in favorable_down %}
+                      <tr><a href="{{ url_for('item', id=fav[1]) }}">
+                        <td class="header1">{{ loop.index }}.</td>
+                        <td class="header2">{{ fav[0] }}</td>
+                        <td class="header3">{{ fav[2] }}%</td>
+                      </a></tr>
+                        {% endfor %}
+                    </table>
+                    </div>
+                </div>
+
+      </div>
+      </body>
+      </html>
